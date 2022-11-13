@@ -51,6 +51,221 @@ class MainPage extends StatelessWidget {
             ),
           ],
         ),
+        body: Container(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+
+              children: [
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: const [
+            //     Text(
+            //       'HR',
+            //       style: TextStyle(fontSize: 24),
+            //     ),
+            //     Text(
+            //       '136',
+            //       style: TextStyle(fontSize: 24),
+            //     ),
+            //     Text(
+            //       'HRØ',
+            //       style: TextStyle(fontSize: 24),
+            //     ),
+            //     Text(
+            //       '114',
+            //       style: TextStyle(fontSize: 24),
+            //     ),
+            //   ],
+            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: 170,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: Center(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: const [
+                            Text(
+                              'HR',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                            SizedBox(width: 20),
+                            Text(
+                              '136',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                          ])),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: 170,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: Center(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: const [
+                            Text(
+                              'HRØ',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                            SizedBox(width: 20),
+                            Text(
+                              '114',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                          ])),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: 170,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: Center(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: const [
+                            Text(
+                              'SPO2',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                            SizedBox(width: 20),
+                            Text(
+                              '82%',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                          ])),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: 170,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: Center(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: const [
+                            Text(
+                              'SPO2Ø',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                            SizedBox(width: 20),
+                            Text(
+                              '71%',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                          ])),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: 170,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: Center(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: const [
+                            Text(
+                              'RR',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                            SizedBox(width: 20),
+                            Text(
+                              '1',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                          ])),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: 170,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: Center(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: const [
+                            Text(
+                              'RRØ',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                            SizedBox(width: 20),
+                            Text(
+                              '1',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                          ])),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.all(10),
+              width: 170,
+              height: 50,
+              decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(18)),
+              child: Center(
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: const [
+                        Text(
+                          'Temp',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        SizedBox(width: 20),
+                        Text(
+                          '25.2',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ])),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.all(10),
+              width: double.infinity,
+              height: 300,
+              decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(18)),
+              child: const Center(
+                child: Text(
+                  'EKG',
+                  style: TextStyle(fontSize: 24),
+                ),
+              ),
+            ),
+          ]),
+        ),
       );
 
   void onSelected(BuildContext context, int item) {
