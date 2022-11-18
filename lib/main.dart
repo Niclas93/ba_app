@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -73,6 +75,14 @@ class MainPageState extends State<MainPage> {
                   value: 3,
                   child: Text('Medicine'),
                 ),
+                const PopupMenuItem<int>(
+                  value: 4,
+                  child: Text('IMU'),
+                ),
+                const PopupMenuItem<int>(
+                  value: 5,
+                  child: Text('Exit'),
+                ),
               ],
             ),
           ],
@@ -81,7 +91,8 @@ class MainPageState extends State<MainPage> {
           buildView(),
           const Page1Widget(),
           const Page2Widget(),
-          const Page3Widget()
+          const Page3Widget(),
+          const Page4Widget(),
         ]));
   }
 
@@ -106,6 +117,36 @@ class MainPageState extends State<MainPage> {
         _controller.animateToPage(3,
             duration: const Duration(milliseconds: 100),
             curve: Curves.easeInOut);
+        break;
+      case 4:
+        _controller.animateToPage(4,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut);
+        break;
+      case 5:
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: const Text('Exit?'),
+            content: const Text('Are you sure you want to exit the App?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Cancel'),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                  onPressed: () {
+                    setState(
+                      () {
+                        Navigator.pop(context, 'Yes');
+                        exit(0);
+                      },
+                    );
+                  },
+                  child: const Text('Yes')),
+            ],
+          ),
+        );
     }
   }
 
@@ -212,9 +253,14 @@ class MainPageState extends State<MainPage> {
   }
 }
 
-class Page1Widget extends StatelessWidget {
+class Page1Widget extends StatefulWidget {
   const Page1Widget({super.key});
 
+  @override
+  Page1WidgetState createState() => Page1WidgetState();
+}
+
+class Page1WidgetState extends State<Page1Widget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -410,9 +456,14 @@ class Page1Widget extends StatelessWidget {
   }
 }
 
-class Page2Widget extends StatelessWidget {
+class Page2Widget extends StatefulWidget {
   const Page2Widget({super.key});
 
+  @override
+  Page2WidgetState createState() => Page2WidgetState();
+}
+
+class Page2WidgetState extends State<Page2Widget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -624,18 +675,18 @@ class Page3WidgetState extends State<Page3Widget> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const Text(
-                            'Ketamin',
-                            style: TextStyle(fontSize: 24),
-                            textAlign: TextAlign.left,
-                          ),
-                          const SizedBox(width: 20),
-                          Text(
-                            usedMedicine2.toString(),
-                            style: const TextStyle(fontSize: 24),
-                            textAlign: TextAlign.right,
-                          ),
-                        ])),
+                      const Text(
+                        'Ketamin',
+                        style: TextStyle(fontSize: 24),
+                        textAlign: TextAlign.left,
+                      ),
+                      const SizedBox(width: 20),
+                      Text(
+                        usedMedicine2.toString(),
+                        style: const TextStyle(fontSize: 24),
+                        textAlign: TextAlign.right,
+                      ),
+                    ])),
               ),
               Center(
                 child: FloatingActionButton(
@@ -668,7 +719,7 @@ class Page3WidgetState extends State<Page3Widget> {
                               TextButton(
                                   onPressed: () {
                                     setState(
-                                          () {
+                                      () {
                                         --usedMedicine2;
                                         Navigator.pop(context, 'Yes');
                                       },
@@ -701,18 +752,20 @@ class Page3WidgetState extends State<Page3Widget> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const Text(
-                            'Fentanyl',
-                            style: TextStyle(fontSize: 24,),
-                            textAlign: TextAlign.left,
-                          ),
-                          const SizedBox(width: 20),
-                          Text(
-                            usedMedicine3.toString(),
-                            style: const TextStyle(fontSize: 24),
-                            textAlign: TextAlign.right,
-                          ),
-                        ])),
+                      const Text(
+                        'Fentanyl',
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      const SizedBox(width: 20),
+                      Text(
+                        usedMedicine3.toString(),
+                        style: const TextStyle(fontSize: 24),
+                        textAlign: TextAlign.right,
+                      ),
+                    ])),
               ),
               Center(
                 child: FloatingActionButton(
@@ -745,7 +798,7 @@ class Page3WidgetState extends State<Page3Widget> {
                               TextButton(
                                   onPressed: () {
                                     setState(
-                                          () {
+                                      () {
                                         --usedMedicine3;
                                         Navigator.pop(context, 'Yes');
                                       },
@@ -763,6 +816,172 @@ class Page3WidgetState extends State<Page3Widget> {
               ),
             ],
           ),
+        ]));
+  }
+}
+
+class Page4Widget extends StatefulWidget {
+  const Page4Widget({super.key});
+
+  @override
+  Page4WidgetState createState() => Page4WidgetState();
+}
+
+class Page4WidgetState extends State<Page4Widget> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.all(18),
+        child: Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: 170,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: Center(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: const [
+                      Text(
+                        'X',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      SizedBox(width: 20),
+                      Text(
+                        '0.1',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ])),
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: 170,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: Center(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: const [
+                      Text(
+                        'X',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      SizedBox(width: 20),
+                      Text(
+                        '-7',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ])),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: 170,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: Center(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: const [
+                      Text(
+                        'Y',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      SizedBox(width: 20),
+                      Text(
+                        '13',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ])),
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: 170,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: Center(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: const [
+                      Text(
+                        'Y',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      SizedBox(width: 20),
+                      Text(
+                        '0',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ])),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: 170,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: Center(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: const [
+                          Text(
+                            'Z',
+                            style: TextStyle(fontSize: 24),
+                          ),
+                          SizedBox(width: 20),
+                          Text(
+                            '0',
+                            style: TextStyle(fontSize: 24),
+                          ),
+                        ])),
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: 170,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: Center(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: const [
+                          Text(
+                            'Z',
+                            style: TextStyle(fontSize: 24),
+                          ),
+                          SizedBox(width: 20),
+                          Text(
+                            '23',
+                            style: TextStyle(fontSize: 24),
+                          ),
+                        ])),
+              ),
+            ],
+          )
         ]));
   }
 }
