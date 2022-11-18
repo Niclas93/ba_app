@@ -9,24 +9,28 @@ Future main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(Main());
+  runApp(const Main());
 }
 
 class Main extends StatelessWidget {
   static const String title = 'Main';
+
+  const Main({super.key});
 
   @override
   Widget build(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
         title: title,
         theme: ThemeData(primarySwatch: Colors.blue),
-        home:  MainPage(),
+        home: MainPage(),
       );
 }
 
 class MainPage extends StatefulWidget {
   final FlutterBlue flutterBlue = FlutterBlue.instance;
   final List<BluetoothDevice> devicesList = <BluetoothDevice>[];
+
+  MainPage({super.key});
 
   @override
   MainPageState createState() => MainPageState();
@@ -66,43 +70,48 @@ class MainPageState extends State<MainPage> {
                   child: Text('History'),
                 ),
                 const PopupMenuItem<int>(
-                  value: 2,
+                  value: 3,
                   child: Text('Medicine'),
                 ),
               ],
             ),
           ],
         ),
-        body:
-      PageView(
-          controller: _controller,
-          children: [
-            buildView(),
-            Page1Widget(),
-            Page2Widget(),
-            Page3Widget()
-          ])
-    );
+        body: PageView(controller: _controller, children: [
+          buildView(),
+          const Page1Widget(),
+          const Page2Widget(),
+          const Page3Widget()
+        ]));
   }
 
   void onSelected(BuildContext context, int item) {
     switch (item) {
       case 0:
-        _controller.animateToPage(0, duration: const Duration(milliseconds: 100), curve: Curves.easeInOut);
+        _controller.animateToPage(0,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut);
         break;
       case 1:
-        _controller.animateToPage(1, duration: const Duration(milliseconds: 100), curve: Curves.easeInOut);
+        _controller.animateToPage(1,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut);
         break;
       case 2:
-        _controller.animateToPage(2, duration: const Duration(milliseconds: 100), curve: Curves.easeInOut);
+        _controller.animateToPage(2,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut);
         break;
       case 3:
-        _controller.animateToPage(3, duration: const Duration(milliseconds: 100), curve: Curves.easeInOut);
+        _controller.animateToPage(3,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut);
     }
   }
 
   BluetoothDevice? connectedDevice;
   List<BluetoothService> services = [];
+
   // var nameOfConnectedDevice;
 
   addDeviceToList(final BluetoothDevice device) {
@@ -204,6 +213,8 @@ class MainPageState extends State<MainPage> {
 }
 
 class Page1Widget extends StatelessWidget {
+  const Page1Widget({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -400,19 +411,358 @@ class Page1Widget extends StatelessWidget {
 }
 
 class Page2Widget extends StatelessWidget {
+  const Page2Widget({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: const Text('Hello World'),
-    );
+        padding: const EdgeInsets.all(18),
+        child: Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                child: const Text(
+                  'HR',
+                  style: TextStyle(fontSize: 25),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: double.infinity,
+                height: 100,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: const Center(
+                  child: Text(
+                    'HR',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                child: const Text(
+                  'SPO2',
+                  style: TextStyle(fontSize: 25),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: double.infinity,
+                height: 100,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: const Center(
+                  child: Text(
+                    'SPO2',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                child: const Text(
+                  'HRV',
+                  style: TextStyle(fontSize: 25),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: double.infinity,
+                height: 100,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: const Center(
+                  child: Text(
+                    'HRV',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                ),
+              ),
+            ]));
   }
 }
 
-class Page3Widget extends StatelessWidget {
+class Page3Widget extends StatefulWidget {
+  const Page3Widget({super.key});
+
+  @override
+  Page3WidgetState createState() => Page3WidgetState();
+}
+
+class Page3WidgetState extends State<Page3Widget> {
+  int usedMedicine1 = 0;
+  int usedMedicine2 = 0;
+  int usedMedicine3 = 0;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: const Text('Hello World'),
-    );
+        padding: const EdgeInsets.all(18),
+        child: Column(children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            width: double.infinity,
+            height: 100,
+            decoration: BoxDecoration(
+                color: Colors.black12, borderRadius: BorderRadius.circular(18)),
+            child: Container(
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+              child: const Text(
+                'Informationen über den Soldaten\n'
+                ' -Allergie gegen Wespen',
+                style: TextStyle(fontSize: 15),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: 200,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: Center(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                      const Text(
+                        'Morphium',
+                        style: TextStyle(fontSize: 24),
+                        textAlign: TextAlign.left,
+                      ),
+                      const SizedBox(width: 20),
+                      Text(
+                        usedMedicine1.toString(),
+                        style: const TextStyle(fontSize: 24),
+                        textAlign: TextAlign.right,
+                      ),
+                    ])),
+              ),
+              Center(
+                child: FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      ++usedMedicine1;
+                    });
+                  },
+                  child: const Icon(Icons.add),
+                ),
+              ),
+              Center(
+                child: FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      if (usedMedicine1 == 0) {
+                      } else {
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Remove one EA?'),
+                            content: const Text(
+                                'Are you sure you want to remove one EA?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    setState(
+                                      () {
+                                        --usedMedicine1;
+                                        Navigator.pop(context, 'Yes');
+                                      },
+                                    );
+                                  },
+                                  child: const Text('Yes')),
+                            ],
+                          ),
+                        );
+                      }
+                    });
+                  },
+                  child: const Icon(Icons.remove),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: 200,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: Center(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text(
+                            'Ketamin',
+                            style: TextStyle(fontSize: 24),
+                            textAlign: TextAlign.left,
+                          ),
+                          const SizedBox(width: 20),
+                          Text(
+                            usedMedicine2.toString(),
+                            style: const TextStyle(fontSize: 24),
+                            textAlign: TextAlign.right,
+                          ),
+                        ])),
+              ),
+              Center(
+                child: FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      ++usedMedicine2;
+                    });
+                  },
+                  child: const Icon(Icons.add),
+                ),
+              ),
+              Center(
+                child: FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      if (usedMedicine2 == 0) {
+                      } else {
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Remove one EA?'),
+                            content: const Text(
+                                'Are you sure you want to remove one EA?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    setState(
+                                          () {
+                                        --usedMedicine2;
+                                        Navigator.pop(context, 'Yes');
+                                      },
+                                    );
+                                  },
+                                  child: const Text('Yes')),
+                            ],
+                          ),
+                        );
+                      }
+                    });
+                  },
+                  child: const Icon(Icons.remove),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                width: 200,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(18)),
+                child: Center(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text(
+                            'Fentanyl',
+                            style: TextStyle(fontSize: 24,),
+                            textAlign: TextAlign.left,
+                          ),
+                          const SizedBox(width: 20),
+                          Text(
+                            usedMedicine3.toString(),
+                            style: const TextStyle(fontSize: 24),
+                            textAlign: TextAlign.right,
+                          ),
+                        ])),
+              ),
+              Center(
+                child: FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      ++usedMedicine3;
+                    });
+                  },
+                  child: const Icon(Icons.add),
+                ),
+              ),
+              Center(
+                child: FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      if (usedMedicine3 == 0) {
+                      } else {
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Remove one EA?'),
+                            content: const Text(
+                                'Are you sure you want to remove one EA?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    setState(
+                                          () {
+                                        --usedMedicine3;
+                                        Navigator.pop(context, 'Yes');
+                                      },
+                                    );
+                                  },
+                                  child: const Text('Yes')),
+                            ],
+                          ),
+                        );
+                      }
+                    });
+                  },
+                  child: const Icon(Icons.remove),
+                ),
+              ),
+            ],
+          ),
+        ]));
   }
 }
