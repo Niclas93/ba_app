@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:ba_app/main.dart';
-import 'package:ba_app/pages/history.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter/services.dart';
@@ -136,9 +135,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-
-
-
         appBar: AppBar(
           title: Text('Platzhalter'),
           centerTitle: true,
@@ -178,10 +174,10 @@ class _MainPageState extends State<MainPage> {
         );
         break;
       case 2:
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => History()),
-          (route) => false,
-        );
+        // Navigator.of(context).pushAndRemoveUntil(
+          // MaterialPageRoute(builder: (context) => History()),
+          // (route) => false,
+        // );
     }
   }
 }
