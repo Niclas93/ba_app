@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class Main extends StatelessWidget {
 class MainPage extends StatefulWidget {
   final FlutterBlue flutterBlue = FlutterBlue.instance;
   final List<BluetoothDevice> devicesList = <BluetoothDevice>[];
+  final Map<Guid, List<int>> readValues = <Guid, List<int>>{};
 
   MainPage({super.key});
 
@@ -40,8 +42,11 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> {
   final PageController _controller = PageController(
-    initialPage: 1,
+    initialPage: 2,
   );
+
+  BluetoothDevice? connectedDevice;
+  List<BluetoothService> services = [];
 
   @override
   void dispose() {
@@ -53,7 +58,7 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Platzhalter'),
+          // title: const Text(''),
           centerTitle: true,
           actions: [
             PopupMenuButton<int>(
@@ -88,7 +93,8 @@ class MainPageState extends State<MainPage> {
           ],
         ),
         body: PageView(controller: _controller, children: [
-          buildView(),
+          buildListViewOfDevices(),
+          _buildConnectDeviceView(),
           const Page1Widget(),
           const Page2Widget(),
           const Page3Widget(),
@@ -99,27 +105,27 @@ class MainPageState extends State<MainPage> {
   void onSelected(BuildContext context, int item) {
     switch (item) {
       case 0:
-        _controller.animateToPage(0,
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.easeInOut);
-        break;
-      case 1:
         _controller.animateToPage(1,
             duration: const Duration(milliseconds: 100),
             curve: Curves.easeInOut);
         break;
-      case 2:
+      case 1:
         _controller.animateToPage(2,
             duration: const Duration(milliseconds: 100),
             curve: Curves.easeInOut);
         break;
-      case 3:
+      case 2:
         _controller.animateToPage(3,
             duration: const Duration(milliseconds: 100),
             curve: Curves.easeInOut);
         break;
-      case 4:
+      case 3:
         _controller.animateToPage(4,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut);
+        break;
+      case 4:
+        _controller.animateToPage(5,
             duration: const Duration(milliseconds: 100),
             curve: Curves.easeInOut);
         break;
@@ -149,9 +155,6 @@ class MainPageState extends State<MainPage> {
         );
     }
   }
-
-  BluetoothDevice? connectedDevice;
-  List<BluetoothService> services = [];
 
   // var nameOfConnectedDevice;
 
@@ -184,50 +187,37 @@ class MainPageState extends State<MainPage> {
   ListView buildListViewOfDevices() {
     List<Widget> containers = <Widget>[];
     for (BluetoothDevice device in widget.devicesList) {
-      containers.add(SizedBox(
-        height: 50,
-        child: Row(children: <Widget>[
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                InkWell(
-                  onTap: () async {
-                    widget.flutterBlue.stopScan();
-                    try {
-                      await device.connect();
-                    } on PlatformException catch (e) {
-                      if (e.code != 'already_connected') {
-                        rethrow;
-                      }
-                    } finally {
-                      services = await device.discoverServices();
-                    }
-                    setState(() {
-                      connectedDevice = device;
-                      // device = nameOfConnectedDevice;
-                    });
-                  },
-                  child: Ink(
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          device.name == '' ? '(unknown device)' : device.name,
-                          style: const TextStyle(fontSize: 25),
-                        ),
-                        // Text(device.id.toString()),
-                      ],
-                    ),
-                  ),
-                ),
-                const Divider(
-                  color: Colors.black,
-                ),
-              ],
+      containers.add(
+        Column(
+          children: [
+            ListTile(
+              title: Text(
+                device.name == '' ? '(unknown device)' : device.name,
+                style: const TextStyle(fontSize: 25),
+                textAlign: TextAlign.center,
+              ),
+              onTap: () async {
+                widget.flutterBlue.stopScan();
+                try {
+                  await device.connect();
+                } on PlatformException catch (e) {
+                  if (e.code != 'already_connected') {
+                    rethrow;
+                  }
+                } finally {
+                  services = await device.discoverServices();
+                }
+                setState(() {
+                  connectedDevice = device;
+                });
+              },
             ),
-          )
-        ]),
-      ));
+            const Divider(
+              color: Colors.black,
+            )
+          ],
+        ),
+      );
     }
 
     return ListView(
@@ -240,15 +230,45 @@ class MainPageState extends State<MainPage> {
 
   ListView buildView() {
     if (connectedDevice != null) {
-      return buildConnectDeviceView();
+      return _buildConnectDeviceView();
     }
     return buildListViewOfDevices();
   }
 
-  ListView buildConnectDeviceView() {
+  ListView _buildConnectDeviceView() {
+    var deviceName = connectedDevice?.name;
+    List<Container> containers = <Container>[];
+    for (BluetoothService service in services) {
+      List<Widget> characteristicsWidget = <Widget>[];
+      for (BluetoothCharacteristic characteristic in service.characteristics) {
+          // print(value);
+          containers.add(Container(child: ListTile(
+                title: Text(
+                  deviceName.toString(),
+                  style: const TextStyle(fontSize: 25),
+                  textAlign: TextAlign.center,
+                ),
+              onTap: () async {
+                var sub = characteristic.value.listen((value) {
+                //   setState(() {
+                    widget.readValues[characteristic.uuid] = value;
+                  // });
+                });
+                await characteristic.read();
+                print(characteristic.value.toList());
+                // sub.cancel();
+              }
+          )
+          )
+    );
+      }
+    }
+
     return ListView(
       padding: const EdgeInsets.all(8),
-      // children: <Widget>[],
+      children: <Widget>[
+        ...containers,
+      ],
     );
   }
 }
@@ -947,16 +967,16 @@ class Page4WidgetState extends State<Page4Widget> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: const [
-                          Text(
-                            'Z',
-                            style: TextStyle(fontSize: 24),
-                          ),
-                          SizedBox(width: 20),
-                          Text(
-                            '0',
-                            style: TextStyle(fontSize: 24),
-                          ),
-                        ])),
+                      Text(
+                        'Z',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      SizedBox(width: 20),
+                      Text(
+                        '0',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ])),
               ),
               Container(
                 padding: const EdgeInsets.all(10),
@@ -969,16 +989,16 @@ class Page4WidgetState extends State<Page4Widget> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: const [
-                          Text(
-                            'Z',
-                            style: TextStyle(fontSize: 24),
-                          ),
-                          SizedBox(width: 20),
-                          Text(
-                            '23',
-                            style: TextStyle(fontSize: 24),
-                          ),
-                        ])),
+                      Text(
+                        'Z',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      SizedBox(width: 20),
+                      Text(
+                        '23',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ])),
               ),
             ],
           )
