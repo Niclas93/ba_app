@@ -38,6 +38,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   english_words: ^4.0.0
   flutter_blue: ^0.8.0
+  gatt: ^0.0.1
+  shared_preferences: ^2.0.15
+  flutter_reactive_ble: ^5.0.2
 
 dev_dependencies:
   flutter_test:

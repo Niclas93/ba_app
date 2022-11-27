@@ -1,9 +1,10 @@
-import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:ba_app/globals.dart';
+
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +31,7 @@ class Main extends StatelessWidget {
 }
 
 class MainPage extends StatefulWidget {
-  final FlutterBlue flutterBlue = FlutterBlue.instance;
+  FlutterBlue flutterBlue = FlutterBlue.instance;
   final List<BluetoothDevice> devicesList = <BluetoothDevice>[];
   final Map<Guid, List<int>> readValues = <Guid, List<int>>{};
 
@@ -45,6 +46,7 @@ class MainPageState extends State<MainPage> {
     initialPage: 2,
   );
 
+  FlutterBlue flutterBlue = FlutterBlue.instance;
   BluetoothDevice? connectedDevice;
   List<BluetoothService> services = [];
 
@@ -94,7 +96,7 @@ class MainPageState extends State<MainPage> {
         ),
         body: PageView(controller: _controller, children: [
           buildListViewOfDevices(),
-          _buildConnectDeviceView(),
+          buildConnectDeviceView(),
           const Page1Widget(),
           const Page2Widget(),
           const Page3Widget(),
@@ -196,10 +198,11 @@ class MainPageState extends State<MainPage> {
                 style: const TextStyle(fontSize: 25),
                 textAlign: TextAlign.center,
               ),
-              onTap: () async {
+              onTap: ()  async {
                 widget.flutterBlue.stopScan();
                 try {
-                  await device.connect();
+                   await device.connect();
+
                 } on PlatformException catch (e) {
                   if (e.code != 'already_connected') {
                     rethrow;
@@ -228,41 +231,46 @@ class MainPageState extends State<MainPage> {
     );
   }
 
-  ListView buildView() {
-    if (connectedDevice != null) {
-      return _buildConnectDeviceView();
-    }
-    return buildListViewOfDevices();
-  }
-
-  ListView _buildConnectDeviceView() {
+  ListView buildConnectDeviceView() {
     var deviceName = connectedDevice?.name;
+    // List<Widget> characteristicsWidget = <Widget>[];
     List<Container> containers = <Container>[];
     for (BluetoothService service in services) {
-      List<Widget> characteristicsWidget = <Widget>[];
+
       for (BluetoothCharacteristic characteristic in service.characteristics) {
-          // print(value);
-          containers.add(Container(child: ListTile(
+        // print(value);
+        containers.add(Container(
+            child: ListTile(
                 title: Text(
                   deviceName.toString(),
                   style: const TextStyle(fontSize: 25),
                   textAlign: TextAlign.center,
                 ),
-              onTap: () async {
-                var sub = characteristic.value.listen((value) {
-                //   setState(() {
-                    widget.readValues[characteristic.uuid] = value;
-                  // });
-                });
-                await characteristic.read();
-                print(characteristic.value.toList());
-                // sub.cancel();
-              }
-          )
-          )
-    );
+                onTap: () async {
+                  characteristic.value.listen((event) {
+                    //print(event.toString());
+                    String values = String.fromCharCodes(event);
+                    //print(values.split("/"));
+                    // Update widget
+                    //widget.readValues[characteristic.uuid] = value1;
+                    value1 = values.split("/")[0];
+                    value2 = values.split("/")[1];
+                    value3 = values.split("/")[2];
+                    value4 = values.split("/")[3];
+                    value5 = values.split("/")[4];
+                    value6 = values.split("/")[5];
+                    value7 = values.split("/")[6];
+                    value8 = values.split("/")[7];
+                    value9 = values.split("/")[8];
+                    value10 = values.split("/")[9];
+                    value11 = values.split("/")[10];
+                  });
+                  await characteristic.setNotifyValue(true);
+                })));
       }
     }
+
+
 
     return ListView(
       padding: const EdgeInsets.all(8),
@@ -299,15 +307,15 @@ class Page1WidgetState extends State<Page1Widget> {
               child: Center(
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
-                    Text(
+                      children: [
+                    const Text(
                       'HR',
                       style: TextStyle(fontSize: 24),
                     ),
-                    SizedBox(width: 20),
-                    Text(
-                      '136',
-                      style: TextStyle(fontSize: 24),
+                    const SizedBox(width: 20),
+                        Text(
+                          value1,
+                      style: const TextStyle(fontSize: 24),
                     ),
                   ])),
             ),
@@ -328,7 +336,7 @@ class Page1WidgetState extends State<Page1Widget> {
                     ),
                     SizedBox(width: 20),
                     Text(
-                      '114',
+                      "",
                       style: TextStyle(fontSize: 24),
                     ),
                   ])),
@@ -349,15 +357,15 @@ class Page1WidgetState extends State<Page1Widget> {
               child: Center(
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
-                    Text(
+                      children: [
+                    const Text(
                       'SPO2',
                       style: TextStyle(fontSize: 24),
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Text(
-                      '82%',
-                      style: TextStyle(fontSize: 24),
+                      value2,
+                      style: const TextStyle(fontSize: 24),
                     ),
                   ])),
             ),
@@ -445,15 +453,15 @@ class Page1WidgetState extends State<Page1Widget> {
           child: Center(
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: const [
-                Text(
+                  children: [
+                const Text(
                   'Temp',
                   style: TextStyle(fontSize: 24),
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 Text(
-                  '25.2',
-                  style: TextStyle(fontSize: 24),
+                  value3,
+                  style: const TextStyle(fontSize: 24),
                 ),
               ])),
         ),
@@ -464,10 +472,10 @@ class Page1WidgetState extends State<Page1Widget> {
           height: 300,
           decoration: BoxDecoration(
               color: Colors.black12, borderRadius: BorderRadius.circular(18)),
-          child: const Center(
+          child: Center(
             child: Text(
-              'EKG',
-              style: TextStyle(fontSize: 24),
+              value4,
+              style: const TextStyle(fontSize: 24),
             ),
           ),
         ),
@@ -866,15 +874,15 @@ class Page4WidgetState extends State<Page4Widget> {
                 child: Center(
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: const [
-                      Text(
+                        children: [
+                      const Text(
                         'X',
                         style: TextStyle(fontSize: 24),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       Text(
-                        '0.1',
-                        style: TextStyle(fontSize: 24),
+                        value6,
+                        style: const TextStyle(fontSize: 24),
                       ),
                     ])),
               ),
@@ -888,15 +896,15 @@ class Page4WidgetState extends State<Page4Widget> {
                 child: Center(
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: const [
-                      Text(
+                        children: [
+                      const Text(
                         'X',
                         style: TextStyle(fontSize: 24),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       Text(
-                        '-7',
-                        style: TextStyle(fontSize: 24),
+                        value9,
+                        style: const TextStyle(fontSize: 24),
                       ),
                     ])),
               ),
@@ -916,15 +924,15 @@ class Page4WidgetState extends State<Page4Widget> {
                 child: Center(
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: const [
-                      Text(
+                        children: [
+                      const Text(
                         'Y',
                         style: TextStyle(fontSize: 24),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       Text(
-                        '13',
-                        style: TextStyle(fontSize: 24),
+                        value7,
+                        style: const TextStyle(fontSize: 24),
                       ),
                     ])),
               ),
@@ -938,15 +946,15 @@ class Page4WidgetState extends State<Page4Widget> {
                 child: Center(
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: const [
-                      Text(
+                        children: [
+                      const Text(
                         'Y',
                         style: TextStyle(fontSize: 24),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       Text(
-                        '0',
-                        style: TextStyle(fontSize: 24),
+                        value10,
+                        style: const TextStyle(fontSize: 24),
                       ),
                     ])),
               ),
@@ -966,15 +974,15 @@ class Page4WidgetState extends State<Page4Widget> {
                 child: Center(
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: const [
-                      Text(
+                        children: [
+                      const Text(
                         'Z',
                         style: TextStyle(fontSize: 24),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       Text(
-                        '0',
-                        style: TextStyle(fontSize: 24),
+                        value8,
+                        style: const TextStyle(fontSize: 24),
                       ),
                     ])),
               ),
@@ -988,15 +996,15 @@ class Page4WidgetState extends State<Page4Widget> {
                 child: Center(
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: const [
-                      Text(
+                        children: [
+                      const Text(
                         'Z',
                         style: TextStyle(fontSize: 24),
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       Text(
-                        '23',
-                        style: TextStyle(fontSize: 24),
+                        value11,
+                        style: const TextStyle(fontSize: 24),
                       ),
                     ])),
               ),
