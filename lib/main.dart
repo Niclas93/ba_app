@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:ba_app/globals.dart';
-
+import 'package:fl_chart/fl_chart.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,9 +58,53 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    historyTimer = Timer.periodic(const Duration(seconds: 60), (timer) {
+      setState(() {
+        value1History;
+        value2History;
+        value3History;
+        hrHistory.add(FlSpot(
+          DateTime
+              .now()
+              .minute
+              .toDouble(),
+          double.parse(value1History),
+        ));
+        spo2History.add(FlSpot(
+          DateTime
+              .now()
+              .minute
+              .toDouble(),
+          double.parse(value2History),
+        ));
+        hrvHistory.add(FlSpot(
+          DateTime
+              .now()
+              .minute
+              .toDouble(),
+          double.parse(value3History),
+        ));
+      });
+    });
+    averagesTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      setState(() {
+        value1;
+        value2;
+        value3;
+        hrDouble1++;
+        spo2Double1++;
+        hrvDouble1++;
+        hrDouble2 = (hrDouble2 + int.parse(value1));
+        hrAverage = (hrDouble2 / hrDouble1).round().toString();
+        spo2Double2 = (spo2Double2 + int.parse(value2));
+        spo2Average = (spo2Double2 / spo2Double1).round().toString();
+        hrvDouble2 = (hrvDouble2 + int.parse(value3));
+        hrvAverage = (hrvDouble2 / hrvDouble1).round().toString();
+      });
+    });
     return Scaffold(
         appBar: AppBar(
-          // title: const Text(''),
+          title: Text(connectedDeviceName),
           centerTitle: true,
           actions: [
             PopupMenuButton<int>(
@@ -158,8 +202,6 @@ class MainPageState extends State<MainPage> {
     }
   }
 
-  // var nameOfConnectedDevice;
-
   addDeviceToList(final BluetoothDevice device) {
     if (!widget.devicesList.contains(device)) {
       setState(() {
@@ -198,11 +240,10 @@ class MainPageState extends State<MainPage> {
                 style: const TextStyle(fontSize: 25),
                 textAlign: TextAlign.center,
               ),
-              onTap: ()  async {
+              onTap: () async {
                 widget.flutterBlue.stopScan();
                 try {
-                   await device.connect();
-
+                  await device.connect();
                 } on PlatformException catch (e) {
                   if (e.code != 'already_connected') {
                     rethrow;
@@ -212,6 +253,7 @@ class MainPageState extends State<MainPage> {
                 }
                 setState(() {
                   connectedDevice = device;
+                  connectedDeviceName = device.name;
                 });
               },
             ),
@@ -236,7 +278,6 @@ class MainPageState extends State<MainPage> {
     // List<Widget> characteristicsWidget = <Widget>[];
     List<Container> containers = <Container>[];
     for (BluetoothService service in services) {
-
       for (BluetoothCharacteristic characteristic in service.characteristics) {
         // print(value);
         containers.add(Container(
@@ -249,13 +290,14 @@ class MainPageState extends State<MainPage> {
                 onTap: () async {
                   characteristic.value.listen((event) {
                     //print(event.toString());
-                    String values = String.fromCharCodes(event);
+                    values = String.fromCharCodes(event);
                     //print(values.split("/"));
-                    // Update widget
-                    //widget.readValues[characteristic.uuid] = value1;
                     value1 = values.split("/")[0];
+                    value1History = values.split("/")[0];
                     value2 = values.split("/")[1];
+                    value2History = values.split("/")[1];
                     value3 = values.split("/")[2];
+                    value3History = values.split("/")[2];
                     value4 = values.split("/")[3];
                     value5 = values.split("/")[4];
                     value6 = values.split("/")[5];
@@ -269,8 +311,6 @@ class MainPageState extends State<MainPage> {
                 })));
       }
     }
-
-
 
     return ListView(
       padding: const EdgeInsets.all(8),
@@ -289,8 +329,26 @@ class Page1Widget extends StatefulWidget {
 }
 
 class Page1WidgetState extends State<Page1Widget> {
+  late Timer timer;
   @override
   Widget build(BuildContext context) {
+      timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        setState(() {
+          value1;
+          value2;
+          value3;
+          value4;
+          hrAverage;
+          spo2Average;
+          hrvAverage;
+        });
+      });
+      // timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+      //   setState(() {
+      //     value5;
+      //     // ekg.add(FlSpot(DateTime.now().second.toDouble(), double.parse(value5),));
+      //   });
+      // });
     return Container(
       padding: const EdgeInsets.all(18),
       child: Column(children: [
@@ -313,8 +371,8 @@ class Page1WidgetState extends State<Page1Widget> {
                       style: TextStyle(fontSize: 24),
                     ),
                     const SizedBox(width: 20),
-                        Text(
-                          value1,
+                    Text(
+                      value1,
                       style: const TextStyle(fontSize: 24),
                     ),
                   ])),
@@ -329,15 +387,15 @@ class Page1WidgetState extends State<Page1Widget> {
               child: Center(
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
-                    Text(
+                      children: [
+                    const Text(
                       'HRØ',
                       style: TextStyle(fontSize: 24),
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Text(
-                      "",
-                      style: TextStyle(fontSize: 24),
+                      hrAverage,
+                      style: const TextStyle(fontSize: 24),
                     ),
                   ])),
             ),
@@ -379,15 +437,15 @@ class Page1WidgetState extends State<Page1Widget> {
               child: Center(
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
-                    Text(
+                      children: [
+                    const Text(
                       'SPO2Ø',
                       style: TextStyle(fontSize: 24),
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Text(
-                      '71%',
-                      style: TextStyle(fontSize: 24),
+                      spo2Average,
+                      style: const TextStyle(fontSize: 24),
                     ),
                   ])),
             ),
@@ -407,15 +465,15 @@ class Page1WidgetState extends State<Page1Widget> {
               child: Center(
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
-                    Text(
+                      children: [
+                    const Text(
                       'HRV',
                       style: TextStyle(fontSize: 24),
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Text(
-                      '1',
-                      style: TextStyle(fontSize: 24),
+                      value3,
+                      style: const TextStyle(fontSize: 24),
                     ),
                   ])),
             ),
@@ -429,15 +487,15 @@ class Page1WidgetState extends State<Page1Widget> {
               child: Center(
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
-                    Text(
+                      children: [
+                    const Text(
                       'HRVØ',
                       style: TextStyle(fontSize: 24),
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Text(
-                      '1',
-                      style: TextStyle(fontSize: 24),
+                      hrvAverage,
+                      style: const TextStyle(fontSize: 24),
                     ),
                   ])),
             ),
@@ -460,7 +518,7 @@ class Page1WidgetState extends State<Page1Widget> {
                 ),
                 const SizedBox(width: 20),
                 Text(
-                  value3,
+                  value4,
                   style: const TextStyle(fontSize: 24),
                 ),
               ])),
@@ -473,11 +531,32 @@ class Page1WidgetState extends State<Page1Widget> {
           decoration: BoxDecoration(
               color: Colors.black12, borderRadius: BorderRadius.circular(18)),
           child: Center(
-            child: Text(
-              value4,
-              style: const TextStyle(fontSize: 24),
+              child: LineChart(
+            LineChartData(
+              minY: 10,
+              maxY: 40,
+              lineBarsData: [
+                LineChartBarData(
+                  spots: ekg,
+                  isCurved: false,
+                )
+              ],
+              titlesData: FlTitlesData(
+                topTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                rightTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+              ),
             ),
-          ),
+          )),
         ),
       ]),
     );
@@ -494,6 +573,35 @@ class Page2Widget extends StatefulWidget {
 class Page2WidgetState extends State<Page2Widget> {
   @override
   Widget build(BuildContext context) {
+    historyTimer = Timer.periodic(const Duration(seconds: 60), (timer) {
+      setState(() {
+        value1History;
+        value2History;
+        value3History;
+        hrHistory.add(FlSpot(
+          DateTime
+              .now()
+              .minute
+              .toDouble(),
+          double.parse(value1History),
+        ));
+        spo2History.add(FlSpot(
+          DateTime
+              .now()
+              .minute
+              .toDouble(),
+          double.parse(value2History),
+        ));
+        hrvHistory.add(FlSpot(
+          DateTime
+              .now()
+              .minute
+              .toDouble(),
+          double.parse(value3History),
+        ));
+      });
+    });
+
     return Container(
         padding: const EdgeInsets.all(18),
         child: Column(
@@ -510,19 +618,39 @@ class Page2WidgetState extends State<Page2Widget> {
               ),
               const SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.all(10),
-                width: double.infinity,
-                height: 100,
-                decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(18)),
-                child: const Center(
-                  child: Text(
-                    'HR',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                ),
-              ),
+                  padding: const EdgeInsets.all(10),
+                  width: double.infinity,
+                  height: 150,
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: LineChart(
+                    LineChartData(
+                      minY: 80,
+                      maxY: 200,
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: hrHistory,
+                          isCurved: false,
+                        )
+                      ],
+                      titlesData: FlTitlesData(
+                        topTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: true),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles:
+                              SideTitles(showTitles: true, reservedSize: 40),
+                        ),
+                      ),
+                    ),
+                  )),
               const SizedBox(height: 20),
               Container(
                 alignment: Alignment.centerLeft,
@@ -535,19 +663,39 @@ class Page2WidgetState extends State<Page2Widget> {
               ),
               const SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.all(10),
-                width: double.infinity,
-                height: 100,
-                decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(18)),
-                child: const Center(
-                  child: Text(
-                    'SPO2',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                ),
-              ),
+                  padding: const EdgeInsets.all(10),
+                  width: double.infinity,
+                  height: 150,
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: LineChart(
+                    LineChartData(
+                      minY: 0,
+                      maxY: 100,
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: spo2History,
+                          isCurved: false,
+                        )
+                      ],
+                      titlesData: FlTitlesData(
+                        topTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: true),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles:
+                              SideTitles(showTitles: true, reservedSize: 40),
+                        ),
+                      ),
+                    ),
+                  )),
               const SizedBox(height: 20),
               Container(
                 alignment: Alignment.centerLeft,
@@ -560,19 +708,39 @@ class Page2WidgetState extends State<Page2Widget> {
               ),
               const SizedBox(height: 5),
               Container(
-                padding: const EdgeInsets.all(10),
-                width: double.infinity,
-                height: 100,
-                decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(18)),
-                child: const Center(
-                  child: Text(
-                    'HRV',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                ),
-              ),
+                  padding: const EdgeInsets.all(10),
+                  width: double.infinity,
+                  height: 150,
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: LineChart(
+                    LineChartData(
+                      minY: 20,
+                      maxY: 120,
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: hrvHistory,
+                          isCurved: false,
+                        )
+                      ],
+                      titlesData: FlTitlesData(
+                        topTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: true),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles:
+                              SideTitles(showTitles: true, reservedSize: 40),
+                        ),
+                      ),
+                    ),
+                  )),
             ]));
   }
 }
@@ -856,8 +1024,19 @@ class Page4Widget extends StatefulWidget {
 }
 
 class Page4WidgetState extends State<Page4Widget> {
+  late Timer timer;
   @override
   Widget build(BuildContext context) {
+    timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      setState(() {
+        value6;
+        value7;
+        value8;
+        value9;
+        value10;
+        value11;
+      });
+    });
     return Container(
         padding: const EdgeInsets.all(18),
         child: Column(children: [

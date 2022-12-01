@@ -41,6 +41,8 @@ dependencies:
   gatt: ^0.0.1
   shared_preferences: ^2.0.15
   flutter_reactive_ble: ^5.0.2
+  state_notifier: ^0.7.2+1
+  fl_chart: ^0.55.2
 
 dev_dependencies:
   flutter_test:
