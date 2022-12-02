@@ -22,9 +22,9 @@ String value9 = "-";
 String value10 = "-";
 String value11 = "-";
 
-int hrDouble1 = 0;
-int spo2Double1 = 0;
-int hrvDouble1 = 0;
+int hrDouble1 = 1;
+int spo2Double1 = 1;
+int hrvDouble1 = 1;
 
 int hrDouble2 = 0;
 int spo2Double2 = 0;

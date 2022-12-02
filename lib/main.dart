@@ -91,15 +91,15 @@ class MainPageState extends State<MainPage> {
         value1;
         value2;
         value3;
-        hrDouble1++;
-        spo2Double1++;
-        hrvDouble1++;
         hrDouble2 = (hrDouble2 + int.parse(value1));
         hrAverage = (hrDouble2 / hrDouble1).round().toString();
         spo2Double2 = (spo2Double2 + int.parse(value2));
         spo2Average = (spo2Double2 / spo2Double1).round().toString();
         hrvDouble2 = (hrvDouble2 + int.parse(value3));
         hrvAverage = (hrvDouble2 / hrvDouble1).round().toString();
+        hrDouble1++;
+        spo2Double1++;
+        hrvDouble1++;
       });
     });
     return Scaffold(
@@ -343,12 +343,15 @@ class Page1WidgetState extends State<Page1Widget> {
           hrvAverage;
         });
       });
-      // timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
-      //   setState(() {
-      //     value5;
-      //     // ekg.add(FlSpot(DateTime.now().second.toDouble(), double.parse(value5),));
-      //   });
-      // });
+      timer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+        setState(() {
+          value5;
+          ekg.add(FlSpot(DateTime.now().millisecond.toDouble(), double.parse(value5),));
+          if (DateTime.now().millisecond.toInt() == 0 || DateTime.now().millisecond.toInt() >= 950 ){
+            ekg.clear();
+          }
+        });
+      });
     return Container(
       padding: const EdgeInsets.all(18),
       child: Column(children: [
@@ -535,10 +538,17 @@ class Page1WidgetState extends State<Page1Widget> {
             LineChartData(
               minY: 10,
               maxY: 40,
+              minX: 0,
+              maxX: 1000,
+              backgroundColor: Colors.black,
               lineBarsData: [
                 LineChartBarData(
                   spots: ekg,
                   isCurved: false,
+                  color: Colors.green,
+                  dotData: FlDotData(
+                    show: false,
+                  )
                 )
               ],
               titlesData: FlTitlesData(
