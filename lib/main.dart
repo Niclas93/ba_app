@@ -306,6 +306,7 @@ class MainPageState extends State<MainPage> {
                     value9 = values.split("/")[8];
                     value10 = values.split("/")[9];
                     value11 = values.split("/")[10];
+                    value12 = values.split("/")[11];
                   });
                   await characteristic.setNotifyValue(true);
                 })));
@@ -346,6 +347,7 @@ class Page1WidgetState extends State<Page1Widget> {
       timer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
         setState(() {
           value5;
+          // value12;
           ekg.add(FlSpot(DateTime.now().millisecond.toDouble(), double.parse(value5),));
           if (DateTime.now().millisecond.toInt() == 0 || DateTime.now().millisecond.toInt() >= 950 ){
             ekg.clear();
@@ -763,9 +765,7 @@ class Page3Widget extends StatefulWidget {
 }
 
 class Page3WidgetState extends State<Page3Widget> {
-  int usedMedicine1 = 0;
-  int usedMedicine2 = 0;
-  int usedMedicine3 = 0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -775,18 +775,40 @@ class Page3WidgetState extends State<Page3Widget> {
           Container(
             padding: const EdgeInsets.all(10),
             width: double.infinity,
-            height: 100,
+            height: 200,
             decoration: BoxDecoration(
                 color: Colors.black12, borderRadius: BorderRadius.circular(18)),
-            child: Container(
-              alignment: Alignment.topLeft,
-              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-              child: const Text(
-                'Informationen über den Soldaten\n'
-                ' -Allergie gegen Wespen',
-                style: TextStyle(fontSize: 15),
-                textAlign: TextAlign.left,
-              ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    const Text(
+                      'Informationen über den Soldaten',
+                      style: TextStyle(fontSize: 15),
+                      textAlign: TextAlign.left,
+                    ),
+                    FloatingActionButton(
+                      mini: true,
+                      onPressed: (){
+                      setState(() {
+                        if(isTextField == false) {
+                          isTextField = true;
+                        }else{
+                          isTextField = false;
+                        }
+                      });
+                    },
+                      child: const Icon(Icons.settings),
+
+                    )
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.all(15),
+                  child: isTextField ? TextField( controller: myController,) : Text(myController.text),
+                )
+              ]
             ),
           ),
           const SizedBox(height: 20),

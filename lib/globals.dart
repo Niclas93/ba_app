@@ -2,6 +2,7 @@ library ba_app.globals;
 
 import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
 String connectedDeviceName = "";
@@ -21,6 +22,7 @@ String value8 = "-";
 String value9 = "-";
 String value10 = "-";
 String value11 = "-";
+String value12 = "-";
 
 int hrDouble1 = 1;
 int spo2Double1 = 1;
@@ -43,3 +45,9 @@ BluetoothDevice? connectedDevice;
 
 late Timer historyTimer;
 late Timer averagesTimer;
+
+int usedMedicine1 = 0;
+int usedMedicine2 = 0;
+int usedMedicine3 = 0;
+bool isTextField = false;
+final myController = TextEditingController();
