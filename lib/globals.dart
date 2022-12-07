@@ -4,8 +4,9 @@ import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-String connectedDeviceName = "";
+String connectedDeviceName = "No Device";
 
 String values = "-";
 String value1 = "-";
@@ -46,8 +47,13 @@ BluetoothDevice? connectedDevice;
 late Timer historyTimer;
 late Timer averagesTimer;
 
-int usedMedicine1 = 0;
-int usedMedicine2 = 0;
-int usedMedicine3 = 0;
+int usedMedicine1Counter = 0;
+List<String> usedMedicine1Times = [];
+int usedMedicine2Counter = 0;
+List<String> usedMedicine2Times = [];
+int usedMedicine3Counter = 0;
+List<String> usedMedicine3Times = [];
+
 bool isTextField = false;
-final myController = TextEditingController();
+TextEditingController myController = TextEditingController();
+
