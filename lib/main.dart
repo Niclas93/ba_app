@@ -123,22 +123,26 @@ class MainPageState extends State<MainPage> {
                 ),
                 const PopupMenuItem<int>(
                   value: 1,
-                  child: Text('Main'),
+                  child: Text('Connected-Devices'),
                 ),
                 const PopupMenuItem<int>(
                   value: 2,
-                  child: Text('History'),
+                  child: Text('Main'),
                 ),
                 const PopupMenuItem<int>(
                   value: 3,
-                  child: Text('Medicine'),
+                  child: Text('History'),
                 ),
                 const PopupMenuItem<int>(
                   value: 4,
-                  child: Text('IMU'),
+                  child: Text('Medicine'),
                 ),
                 const PopupMenuItem<int>(
                   value: 5,
+                  child: Text('IMU'),
+                ),
+                const PopupMenuItem<int>(
+                  value: 6,
                   child: Text('Exit'),
                 ),
               ],
@@ -168,31 +172,36 @@ class MainPageState extends State<MainPage> {
   void onSelected(BuildContext context, int item) {
     switch (item) {
       case 0:
-        controller.animateToPage(1,
+        controller.animateToPage(0,
             duration: const Duration(milliseconds: 100),
             curve: Curves.easeInOut);
         break;
       case 1:
-        controller.animateToPage(2,
+        controller.animateToPage(1,
             duration: const Duration(milliseconds: 100),
             curve: Curves.easeInOut);
         break;
       case 2:
-        controller.animateToPage(3,
+        controller.animateToPage(2,
             duration: const Duration(milliseconds: 100),
             curve: Curves.easeInOut);
         break;
       case 3:
-        controller.animateToPage(4,
+        controller.animateToPage(3,
             duration: const Duration(milliseconds: 100),
             curve: Curves.easeInOut);
         break;
       case 4:
-        controller.animateToPage(5,
+        controller.animateToPage(4,
             duration: const Duration(milliseconds: 100),
             curve: Curves.easeInOut);
         break;
       case 5:
+        controller.animateToPage(5,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeInOut);
+        break;
+      case 6:
         showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
@@ -295,7 +304,6 @@ class MainPageState extends State<MainPage> {
   }
 
   ListView buildConnectDeviceView() {
-    var deviceName = connectedDevice?.name;
     // List<Widget> characteristicsWidget = <Widget>[];
     List<Container> containers = <Container>[];
     for (BluetoothService service in services) {
@@ -304,7 +312,7 @@ class MainPageState extends State<MainPage> {
         containers.add(Container(
             child: ListTile(
                 title: Text(
-                  deviceName.toString(),
+                  connectedDeviceName,
                   style: const TextStyle(fontSize: 25),
                   textAlign: TextAlign.center,
                 ),
@@ -803,8 +811,6 @@ class Page3Widget extends StatefulWidget {
 }
 
 class Page3WidgetState extends State<Page3Widget> {
-
-
   @override
   void initState(){
     super.initState();
@@ -1004,7 +1010,7 @@ class Page3WidgetState extends State<Page3Widget> {
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
                                 title: const Text('Time of medicine use'),
-                                content: Text(usedMedicine1Times.join("\n")), //.join("\n")
+                                content: Text(usedMedicine1Times.join("\n")),
                               ));
                     },
                     child: Container(
